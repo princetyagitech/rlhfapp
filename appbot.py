@@ -67,7 +67,6 @@ def generate_response(prompt,algorithm,rewardmodel):
             output = query({
                 "inputs": prompt,
             })
-            logging.info(output)
             return output[0]['generated_text']
     
         elif algorithm=="ilql":
@@ -77,7 +76,6 @@ def generate_response(prompt,algorithm,rewardmodel):
             def query(payload):
                 response = requests.post(API_URL, headers=headers, json=payload)
                 return response.json()
-            logging.info(output)
 
             output = query({
                 "inputs": prompt,
@@ -92,7 +90,6 @@ def generate_response(prompt,algorithm,rewardmodel):
             def query(payload):
                 response = requests.post(API_URL, headers=headers, json=payload)
                 return response.json()
-            logging.info(output)    
             output = query({
                 "inputs": prompt,"parameters": {"temperature":0},
             })
@@ -106,7 +103,6 @@ def generate_response(prompt,algorithm,rewardmodel):
             def query(payload):
                 response = requests.post(API_URL, headers=headers, json=payload)
                 return response.json()
-            logging.info(output)     
             output = query({
                 "inputs": prompt,
             })
