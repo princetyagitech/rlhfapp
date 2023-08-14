@@ -13,8 +13,6 @@ with st.sidebar:
     st.title('🤗💬 RLHF Trained LLMs Chat App')
     add_vertical_space(4)
     algorithm = st.selectbox('Select the algorithm ',('ppo', 'ilql'))
-    add_vertical_space(4)
-
     rewardmodel = st.selectbox('Select the Model Trained with specific Reward Model ',('gptneo125m', 'gptneo350m'))
     add_vertical_space(6)
     st.markdown('''
