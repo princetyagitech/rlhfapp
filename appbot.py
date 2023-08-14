@@ -3,7 +3,7 @@ from streamlit_chat import message
 from streamlit_extras.colored_header import colored_header
 from streamlit_extras.add_vertical_space import add_vertical_space
 import requests
-
+import logging
 st.set_page_config(page_title="An LLM-powered Streamlit Summarization app")
 
 
@@ -67,7 +67,7 @@ def generate_response(prompt,algorithm,rewardmodel):
             output = query({
                 "inputs": prompt,
             })
-            print(output)
+            logging.info(output)
             return output[0]['generated_text']
     
         elif algorithm=="ilql":
@@ -77,7 +77,8 @@ def generate_response(prompt,algorithm,rewardmodel):
             def query(payload):
                 response = requests.post(API_URL, headers=headers, json=payload)
                 return response.json()
-                
+            logging.info(output)
+
             output = query({
                 "inputs": prompt,
             })
@@ -91,7 +92,7 @@ def generate_response(prompt,algorithm,rewardmodel):
             def query(payload):
                 response = requests.post(API_URL, headers=headers, json=payload)
                 return response.json()
-                
+            logging.info(output)    
             output = query({
                 "inputs": prompt,"parameters": {"temperature":0},
             })
@@ -105,7 +106,7 @@ def generate_response(prompt,algorithm,rewardmodel):
             def query(payload):
                 response = requests.post(API_URL, headers=headers, json=payload)
                 return response.json()
-                
+            logging.info(output)     
             output = query({
                 "inputs": prompt,
             })
