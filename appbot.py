@@ -7,13 +7,16 @@ import requests
 st.set_page_config(page_title="An LLM-powered Streamlit Summarization app")
 
 
-
+token=st.secrets["token"]
 # Sidebar contents
 with st.sidebar:
     st.title('🤗💬 RLHF Trained LLMs Chat App')
     add_vertical_space(4)
     algorithm = st.selectbox('Select the algorithm ',('ppo', 'ilql'))
-    add_vertical_space(20)
+    add_vertical_space(4)
+
+    rewardmodel = st.selectbox('Select the Model Trained with specific Reward Model ',('gptneo125m', 'gptneo350m'))
+    add_vertical_space(6)
     st.markdown('''
     ## About
     This app is an LLM-powered (only for Summarization task) chatbot built using:
@@ -50,46 +53,68 @@ with input_container:
 
 # Response output
 ## Function for taking user prompt as input followed by producing AI generated responses
-def generate_response(prompt,algorithm):
-    '''model="princetyagi/iqlt5base"
-    prefix = "summarize: "
-    tokenizer = AutoTokenizer.from_pretrained(model)
-    inputs = tokenizer(prefix+prompt, return_tensors="pt").input_ids
-    model = AutoModelForSeq2SeqLM.from_pretrained(model)
-    outputs = model.generate(inputs, max_new_tokens=100, do_sample=False)
-    return tokenizer.decode(outputs[0], skip_special_tokens=True)'''
-    if algorithm=="ppo":
+def generate_response(prompt,algorithm,rewardmodel):
+    if rewardmodel=='gptneo125m':
+        if algorithm=="ppo":
 
-        API_URL = "https://api-inference.huggingface.co/models/princetyagi/iqlt5base"
-        headers = {"Authorization": "Bearer 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"}
+            API_URL = "https://api-inference.huggingface.co/models/princetyagi/ppot5basewithRMgptneo125m"
+            headers = {"Authorization": token}
 
-        def query(payload):
-            response = requests.post(API_URL, headers=headers, json=payload)
-            return response.json()
-            
-        output = query({
-            "inputs": prompt,"parameters": {"temperature":0},
-        })
-        print(output)
-        return output[0]['generated_text']
+            def query(payload):
+                response = requests.post(API_URL, headers=headers, json=payload)
+                return response.json()
+                  
+            output = query({
+                "inputs": prompt,
+            })
+            print(output)
+            return output[0]['generated_text']
     
-    elif algorithm=="ilql":
-        API_URL = "https://api-inference.huggingface.co/models/princetyagi/iqlt5base"
-        headers = {"Authorization": "Bearer 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"}
+        elif algorithm=="ilql":
+            API_URL = "https://api-inference.huggingface.co/models/princetyagi/iqlt5basewithRMgptneo125m"
+            headers = {"Authorization": token}
 
-        def query(payload):
-            response = requests.post(API_URL, headers=headers, json=payload)
-            return response.json()
-            
-        output = query({
-            "inputs": prompt,
-        })
-        return output[0]['generated_text']
+            def query(payload):
+                response = requests.post(API_URL, headers=headers, json=payload)
+                return response.json()
+                
+            output = query({
+                "inputs": prompt,
+            })
+            return output[0]['generated_text']
+    elif rewardmodel=='gptneo350m':
+        if algorithm=="ppo":
+
+            API_URL = "https://api-inference.huggingface.co/models/princetyagi/ppot5basewithRMgptneo350m"
+            headers = {"Authorization": token}
+
+            def query(payload):
+                response = requests.post(API_URL, headers=headers, json=payload)
+                return response.json()
+                
+            output = query({
+                "inputs": prompt,"parameters": {"temperature":0},
+            })
+            print(output)
+            return output[0]['generated_text']
+        
+        elif algorithm=="ilql":
+            API_URL = "https://api-inference.huggingface.co/models/princetyagi/iqlt5basewithRMgptneo350m"
+            headers = {"Authorization": token}
+
+            def query(payload):
+                response = requests.post(API_URL, headers=headers, json=payload)
+                return response.json()
+                
+            output = query({
+                "inputs": prompt,
+            })
+            return output[0]['generated_text']
 
 ## Conditional display of AI generated responses as a function of user provided prompts
 with response_container:
-    if user_input and algorithm:
-        response = generate_response(user_input,algorithm)
+    if user_input and algorithm and rewardmodel:
+        response = generate_response(user_input,algorithm,rewardmodel)
         st.session_state.past.append(user_input)
         st.session_state.generated.append(response)
         
